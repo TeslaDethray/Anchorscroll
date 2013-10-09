@@ -7,7 +7,9 @@
       listID:         'anchorscroll-menu',
       anchorTarget:   'a',
       appearAt:       0,
-      autoResize:     false
+      autoResize:     false,
+      beforeListItem: '',
+      afterListItem:  ''
     }, options);
 
     function pickAppearLocation(number) {
@@ -29,8 +31,9 @@
       
       $(this).children(settings.anchorTarget).each(function() {
         if((settings.anchorTarget != 'a') || (typeof $(this).attr('href') == 'undefined')) {
-          var offset = Math.ceil($(this).offset().top);
-          links += '<li class="anchor-' + offset + '">' + $(this).attr('name') + '</li>';
+          var offset = $(this).offset();
+          offset = Math.ceil(offset.top);
+          links += '<li class="anchor-' + offset + '">' + settings.beforeListItem + $(this).attr('name') + settings.afterListItem + '</li>';
           $(this).addClass('anchor-' + offset);
           anchorLocations.push(offset);
         }
@@ -47,6 +50,7 @@
       $(window).scroll(function() {
         $(menuName).children('li').removeClass('active').removeClass('past').removeClass('future');
         $(this).children(settings.anchorTarget).removeClass('active').removeClass('past').removeClass('future');
+        var classname = 'past';
 
         for(i = 0; i < anchorLocations.length; i++) {
           if($(window).scrollTop() >= (anchorLocations[i] - appearLocation)) {
@@ -57,6 +61,10 @@
             }
             classname = 'future';
           }
+          //If last item was still designated as in the past, make it the active one.
+          if($('.anchor-' + anchorLocations[(anchorLocations.length - 1)]).hasClass('past')) {
+            $('.anchor-' + anchorLocations[(anchorLocations.length - 1)]).addClass('active').removeClass('past');
+          }  
           $('.anchor-' + anchorLocations[i]).addClass(classname);
         }
       });
@@ -72,7 +80,7 @@
         }
       }
 
-      $('body').scrollTop(scrollTo);
+      $('html, body').animate({scrollTop: scrollTo}, 500);
      });
 
      if(settings.autoResize) {
