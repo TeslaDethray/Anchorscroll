@@ -13,7 +13,7 @@
     }, options);
 
     function pickAppearLocation(number) {
-      if(number.search('%') > -1) {
+      if(String(number).search('%') > -1) {
         number = number.split('%');
         number = Math.floor($(window).height() * (Number(number[0]) / 100)); 
       }
@@ -62,9 +62,10 @@
             classname = 'future';
           }
           //If last item was still designated as in the past, make it the active one.
-          if($('.anchor-' + anchorLocations[(anchorLocations.length - 1)]).hasClass('past')) {
-            $('.anchor-' + anchorLocations[(anchorLocations.length - 1)]).addClass('active').removeClass('past');
-          }  
+          if((anchorLocations.length == (i + 1)) && (classname == 'past')) {
+            classname = 'active';
+          }
+
           $('.anchor-' + anchorLocations[i]).addClass(classname);
         }
       });
